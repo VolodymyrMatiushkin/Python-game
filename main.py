@@ -2,9 +2,11 @@ from databasegp import InventoryDB
 import pygame
 import ctypes
 import random
+import sqlite3
 
 db = InventoryDB()
-db.clear_inventory()
+conn = sqlite3.connect("inventory.db")
+cursor = conn.cursor()
 
 app_id = 'Pythongame.app'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id) # Fixes an issue with the taskbar icon not displaying correctly.
@@ -93,8 +95,8 @@ while running:
 	screen.blit(font.render("2", False, "White"), (435, 500))
 	screen.blit(font.render("3", False, "White"), (510, 500))
 	screen.blit(font.render(f"Wins: {score}", False, "White"), (750, 550))
-
-	if score > 0: 
+	cursor.execute("SELECT 1 FROM inventory LIMIT 1")
+	if score > 0 or cursor.fetchone():
 		for index, item in enumerate(items):
 			text_str = f"Inventory: {item[1]}({item[2]})"
 			text_inventory = font.render(text_str, False, (255, 255, 255))
